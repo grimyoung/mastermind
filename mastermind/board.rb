@@ -1,8 +1,8 @@
 module Mastermind
 	class Board
 		attr_accessor :grid, :pattern_hash
-		def initialize(input = {},pattern)
-			@grid = input.fetch(:grid, default_grid).push(pattern)
+		def initialize(pattern)
+			@grid = default_grid.push(pattern)
 			@pattern_hash = set_pattern_hash(pattern)
 		end
 
@@ -19,14 +19,20 @@ module Mastermind
 		end
 
 		def add_entry(guess)
-			grid.push([guess,check_guess])
+			grid.push([guess,check_guess(guess)])
 		end
-
 
 		def set_pattern_hash(pattern)
 			return count_colors(pattern)
 		end
 
+		def feedback
+			return grid[-1][-1]
+		end
+
+		def show_pattern
+			return grid[0]
+		end
 		def count_colors(array)
 			hash = Hash.new
 			array.each do |element|
@@ -39,13 +45,16 @@ module Mastermind
 			return hash
 		end
 
+		#number of correct colors
 		def compare_colors(phash,ghash)
 			same_colors = 0
 			ghash.each do |key,value|
-				if phash[key] <= value
-					same_colors = same_colors + phash[key]
-				else
-					same_colors = same_colors + value
+				if phash.key?(key) 
+					if phash[key] <= value
+						same_colors = same_colors + phash[key]
+					else
+						same_colors = same_colors + value
+					end
 				end
 			end
 			return same_colors
@@ -54,7 +63,7 @@ module Mastermind
 		def compare_positions(parray,garray)
 			correct = 0
 			parray.each_with_index do |value,index|
-				if garray(index) == value
+				if garray[index] == value
 					correct = correct + 1
 				end
 			end
