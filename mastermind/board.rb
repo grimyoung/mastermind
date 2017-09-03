@@ -6,16 +6,14 @@ module Mastermind
 			@pattern_hash = set_pattern_hash(pattern)
 		end
 
-		#white = correct color
-		#black = correct color and correct position
 		def check_guess(guess)
 			guess_hash = count_colors(guess)
-			white = compare_colors(pattern_hash,guess_hash)
-			black = compare_positions(grid[0],guess)
-			if black > 0
-				white = white - black
+			correct_colors = compare_colors(pattern_hash,guess_hash)
+			correct_colors_and_positions = compare_positions(grid[0],guess)
+			if correct_colors_and_positions > 0
+				correct_colors = correct_colors - correct_colors_and_positions
 			end
-			return [black,white]
+			return [correct_colors_and_positions,correct_colors]
 		end
 
 		def add_entry(guess)
